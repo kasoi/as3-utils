@@ -1,0 +1,59 @@
+package com.skatilsya.visualtests.ui 
+{
+	import com.skatilsya.ui.ScrollableContent;
+	import com.skatilsya.visualtests.VisualTestBase;
+	import flash.display.Shape;
+	import flash.display.Sprite;
+	
+	/**
+	 * 
+	 * @author me
+	 */
+	public class ScrollableContentTest extends VisualTestBase 
+	{
+		
+		////////////////////////////////////////////////////////////////////
+		// Public properties
+		////////////////////////////////////////////////////////////////////
+		
+		////////////////////////////////////////////////////////////////////
+		// Private properties
+		////////////////////////////////////////////////////////////////////
+		
+		////////////////////////////////////////////////////////////////////
+		// Public methods
+		////////////////////////////////////////////////////////////////////
+		
+		public function ScrollableContentTest() 
+		{
+			this.init("ScrollableContent testing");
+			
+			this.addOption("create content", this.createScrollableContent);
+		}
+		
+		////////////////////////////////////////////////////////////////////
+		// Private methods
+		////////////////////////////////////////////////////////////////////
+		
+		private function createScrollableContent():void 
+		{
+			var spr: Sprite = new Sprite();
+			
+			for (var i:int = 0; i < 33; i++) 
+			{
+				spr.graphics.beginFill(Math.random() * 0xffffff, 1);
+				spr.graphics.drawRect(0, i * 50, 150, 50);
+				spr.graphics.endFill();
+			}
+			
+			var content: ScrollableContent = new ScrollableContent(spr, 150, 300);
+			addChild(content);
+		}
+		
+		////////////////////////////////////////////////////////////////////
+		// Listeners
+		////////////////////////////////////////////////////////////////////
+		
+	}
+	
+}
