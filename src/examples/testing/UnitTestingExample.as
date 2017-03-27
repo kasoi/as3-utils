@@ -32,6 +32,7 @@ package examples.testing
 		{
 			this.defaultUsage();
 			//this.timeoutTesting(); // uncomment it if you want to wait until you get timeout exception
+			
 			/**
 			 * And this one will work even if you have a huge amount of tests or large ones
 			 * Be careful that if your test is large by itself (like just one can work for a minute), you
@@ -82,9 +83,10 @@ package examples.testing
 		{
 			var testing: UnitTesting = new UnitTesting();
 			
-			for (var i:int = 0; i < 100; i++) 
+			for (var i:int = 0; i < 50; i++) 
 			{
 				testing.addUnitTestClass(ReallyLongUnitTest);
+				testing.addUnitTestClass(ExampleCustomUnitTest);
 			}
 			
 			testing.addEventListener(UnitTestingEvent.SINGLE_TEST_COMPLETE, this.testing_onSingleTestCompleted);

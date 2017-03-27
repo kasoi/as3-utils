@@ -33,6 +33,14 @@ package com.skatilsya.unittests
 		
 		private var asyncTestCount: int = -1;
 		
+		private var nextMiniTestAvailable: Boolean = true;
+		
+		private var currentTest: IUnitTestBase;
+		
+		////////////////////////////////////////////////////////////////////
+		// Public methods
+		////////////////////////////////////////////////////////////////////
+		
 		public function UnitTesting() 
 		{
 			testClasses = new Vector.<Class>();
@@ -66,27 +74,7 @@ package com.skatilsya.unittests
 		{
 			this.asyncTestCount = 0;
 			this.results = new Vector.<TestResult>();
-			this.runNextTest();
-		}
-		
-		public function runNextTest():void 
-		{
-			var unit: Class = testClasses[asyncTestCount];
-			var testUnit: IUnitTestBase = new unit() as IUnitTestBase;
-			
-			var result: TestResult = testUnit.run();
-			results.push(result);
-			this.dispatchEvent(new UnitTestingEvent(UnitTestingEvent.SINGLE_TEST_COMPLETE, result));
-			
-			asyncTestCount++;
-			if (asyncTestCount >= testClasses.length) 
-			{
-				this.dispatchEvent(new UnitTestingEvent(UnitTestingEvent.UNITTESTING_COMPLETE));
-				
-				return;
-			}
-			
-			setTimeout(runNextTest, 10); // just to let the program window be closeable
+			setTimeout(runNextTest, 10);
 		}
 		
 		/**
@@ -97,6 +85,52 @@ package com.skatilsya.unittests
 		public function addUnitTestClass(unit: Class):void 
 		{
 			testClasses.push(unit);
+		}
+		
+		////////////////////////////////////////////////////////////////////
+		// Private methods
+		////////////////////////////////////////////////////////////////////
+		
+		private var i: int = 1;
+		
+		private function runNextTest():void 
+		{
+			var testUnit: IUnitTestBase;
+			if (this.currentTest == null)
+			{
+				var unit: Class = testClasses[asyncTestCount];
+				testUnit = new unit() as IUnitTestBase;
+				this.currentTest = testUnit;
+			}
+			else testUnit = this.currentTest;
+			
+			testUnit.addEventListener(UnitTestingEvent.MINITEST_COMPLETE, testUnit_onMinitestComplete);
+			if (!nextMiniTestAvailable)
+			{
+				this.dispatchEvent(new UnitTestingEvent(UnitTestingEvent.SINGLE_TEST_COMPLETE, this.currentTest.result));
+				this.results.push(this.currentTest.result);
+				this.asyncTestCount++;
+			}
+			else
+			{
+				this.nextMiniTestAvailable = !testUnit.runNext();
+				return;
+			}
+			
+			if (asyncTestCount >= testClasses.length) 
+			{
+				this.dispatchEvent(new UnitTestingEvent(UnitTestingEvent.UNITTESTING_COMPLETE));
+				return;
+			}
+			
+			this.nextMiniTestAvailable = true;
+			this.currentTest = null;
+			setTimeout(runNextTest, 15); 
+		}
+		
+		private function testUnit_onMinitestComplete(e:UnitTestingEvent):void 
+		{
+			setTimeout(runNextTest, 15); // just to let the program window be closeable
 		}
 		
 	}

@@ -12,6 +12,8 @@ package com.skatilsya.unittests.events
 		
 		static public const SINGLE_TEST_COMPLETE: String = "singleTestComplete";
 		
+		static public const MINITEST_COMPLETE: String = "miniTestComplete";
+		
 		static public const UNITTESTING_COMPLETE: String = "unitTestingComplete";
 		
 		public var result: TestResult;
